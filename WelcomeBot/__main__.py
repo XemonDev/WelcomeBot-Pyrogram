@@ -21,7 +21,7 @@ def admin_only(func: Callable) -> Callable:
 
 def welcome_on(func: Callable) -> Callable:
     async def decorator(client: Client, message: Message):
-        if cur.execute("SELECT * FROM welcome").fetchone()['status'] == 'on':
+        if cur.execute("SELECT * FROM welcome").fetchone()['status'] == 'on' and message.chat.id in CHATS:
             return await func(client, message)
 
     return decorator
