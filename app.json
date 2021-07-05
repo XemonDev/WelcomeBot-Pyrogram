@@ -1,0 +1,35 @@
+{
+  "name": "Welcome Bot",
+  "logo": "https://telegra.ph/file/729c6da05375dbfcb0d4e.jpg",
+  "description": "Auto welcome in the group",
+  "keywords": ["welcome", "pyrogram", "bot", "telegram"],
+  "repository": "https://github.com/XemonDev/WelcomeBot-Pyrogram",
+  "stack": "container",
+  "buildpacks": [
+   {
+     "url": "heroku/python"
+   }   
+  ],        
+  "env": {
+    "SESSION_STRING": {
+      "description": "Pyrogram session string",
+      "required": true
+    },
+    "API_ID": {
+      "description": "App ID from my.telegram.org/apps",
+      "required": true
+    },
+    "API_HASH": {
+      "description": "App hash from my.telegram.org/apps",
+      "required": true
+    },
+    "SUDO_USERS": {
+      "description": "List of user IDs counted as admin everywhere (separated by space).",
+      "required": true
+    },
+    "CHATS": {
+        "description": "List of groups in which the robot is active (separated by space).",
+        "required": true
+      }
+  }
+}
