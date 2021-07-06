@@ -112,7 +112,7 @@ async def joined(app: Client, msg: Message):
     welcome = cur.execute("SELECT * FROM welcome").fetchone()['welcome']
     if welcome is not None:
         await msg.reply(str(welcome))
-@app.on_message(filters.group & filters.reply & filters.command(['اصل بده','asl bede','asl']))
+@app.on_message(filters.group & filters.reply & filters.command(['اصل بده','asl bede','asl'],[""]))
 @pro
 async def prf(app: Client,message: Message):
     cur.execute("SELECT * FROM profile WHERE id = '%s'" % message.reply_to_message.from_user.id)
