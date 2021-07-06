@@ -25,7 +25,15 @@ def welcome_on(func: Callable) -> Callable:
             return await func(client, message)
 
     return decorator
+def pro(func: Callable) -> Callable:
+    async def decorator(client: Client, message: Message):
+        if cur.execute("SELECT * FROM welcome").fetchone()['profile_status'] == 'on' and message.chat.id in CHATS:
+            cur.execute("SELECT * FROM profile WHERE id = '%s'" % message.reply_to_message.from_user.id)
+            user = cur.fetchone()
+            if user is not None:
+                return await func(client, message)
 
+    return decorator
 
 @app.on_message(filters.regex(r"^welcome (on|off)") & filters.group)
 @admin_only
@@ -107,6 +115,11 @@ async def joined(app: Client, msg: Message):
     welcome = cur.execute("SELECT * FROM welcome").fetchone()['welcome']
     if welcome is not None:
         await msg.reply(str(welcome))
-
+@app.on_message(filters.group & filters.reply)
+@pro
+async def prf(app: Client,message: Message):
+    cur.execute("SELECT * FROM profile WHERE id = '%s'" % message.reply_to_message.from_user.id)
+    user = cur.fetchone()
+    await message.reply("● اصل کاربر:\n%s" % user['profile'])
 app.start()
 idle()
