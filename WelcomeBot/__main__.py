@@ -28,10 +28,7 @@ def welcome_on(func: Callable) -> Callable:
 def pro(func: Callable) -> Callable:
     async def decorator(client: Client, message: Message):
         if cur.execute("SELECT * FROM welcome").fetchone()['profile_status'] == 'on' and message.chat.id in CHATS:
-            cur.execute("SELECT * FROM profile WHERE id = '%s'" % message.reply_to_message.from_user.id)
-            user = cur.fetchone()
-            if user is not None:
-                return await func(client, message)
+            return await func(client, message)
 
     return decorator
 
@@ -120,6 +117,7 @@ async def joined(app: Client, msg: Message):
 async def prf(app: Client,message: Message):
     cur.execute("SELECT * FROM profile WHERE id = '%s'" % message.reply_to_message.from_user.id)
     user = cur.fetchone()
-    await message.reply("● اصل کاربر:\n%s" % user['profile'])
+    if user is not None:
+        await message.reply("● اصل کاربر:\n%s" % user['profile'])
 app.start()
 idle()
