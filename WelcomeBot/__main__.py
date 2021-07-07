@@ -88,6 +88,7 @@ async def profile(app: Client, msg: Message):
         }
         await msg.reply(f'حالت اصل خودکار از قبل {Cmds[CMD]} بود')
 @app.on_message(filters.command(['setp','تنظیم اصل'],['','/','!','#']) & filters.reply & filters.group)
+@admin_only
 async def set_profile(app: Client, msg: Message):
     reply = msg.reply_to_message
     t = reply.from_user.is_bot
