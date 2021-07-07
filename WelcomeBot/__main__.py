@@ -22,7 +22,8 @@ def admin_only(func: Callable) -> Callable:
 def welcome_on(func: Callable) -> Callable:
     async def decorator(client: Client, message: Message):
         if cur.execute("SELECT * FROM welcome").fetchone()['welcome_status'] == 'on' and message.chat.id in CHATS:
-            return await func(client, message)
+            if message.from_user.id == message.new_chat_members[0].id:
+                return await func(client, message)
 
     return decorator
 def pro(func: Callable) -> Callable:
@@ -106,7 +107,7 @@ async def set_profile(app: Client, msg: Message):
                     
                 
         
-@app.on_message(filters.new_chat_members & filters.new_chat_members_filter & filters.group)
+@app.on_message(filters.new_chat_members & filters.group)
 @welcome_on
 async def joined(app: Client, msg: Message):
     welcome = cur.execute("SELECT * FROM welcome").fetchone()['welcome']
