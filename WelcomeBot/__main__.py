@@ -33,8 +33,7 @@ def pro(func: Callable) -> Callable:
 
     return decorator
 
-@app.on_message(filters.regex(r"^welcome (on|off)") & filters.group)
-@admin_only
+@app.on_message(filters.regex(r"^welcome (on|off)") & filters.group & filters.me)
 async def wlc(app: Client, msg: Message):
     CMD = msg.matches[0].group(1)
     status = cur.execute("SELECT * FROM welcome").fetchone()['welcome_status']
@@ -42,11 +41,11 @@ async def wlc(app: Client, msg: Message):
         if CMD.lower() == 'on':
             cur.execute("UPDATE welcome SET welcome_status = 'on'")
             db.commit()
-            await msg.reply('خوش امدگویی خودکار فعال شد')
+            await msg.edit_text('خوش امدگویی خودکار فعال شد')
         elif CMD.lower() == 'off':
             cur.execute("UPDATE welcome SET welcome_status = 'off'")
             db.commit()
-            await msg.reply('خوش امدگویی خودکار خاموش شد')
+            await msg.edit_text('خوش امدگویی خودکار خاموش شد')
         else:
             pass
     else:
@@ -54,19 +53,17 @@ async def wlc(app: Client, msg: Message):
             "on": "روشن",
             "off": "خاموش"
         }
-        await msg.reply(f'خوش امدگویی خودکار از قبل {Cmds[CMD]} بود')
+        await msg.edit_text(f'خوش امدگویی خودکار از قبل {Cmds[CMD]} بود')
 
 
-@app.on_message(filters.regex(r"setwelcome (\w.*)") & filters.group)
-@admin_only
+@app.on_message(filters.regex(r"setwelcome (\w.*)") & filters.group & filters.me)
 async def set_welcome(app: Client, msg: Message):
     wlc = msg.matches[0].group(1)
     if len(wlc) <= 70:
         cur.execute("UPDATE welcome SET welcome = '%s'" % wlc)
         db.commit()
-        await msg.reply('متن خوش امدگویی به تنظیم شد:\n%s' % wlc)
-@app.on_message(filters.regex(r"^profile (on|off)") & filters.group)
-@admin_only
+        await msg.edit_text('متن خوش امدگویی به تنظیم شد:\n%s' % wlc)
+@app.on_message(filters.regex(r"^profile (on|off)") & filters.group & filters.me)
 async def profile(app: Client, msg: Message):
     CMD = msg.matches[0].group(1)
     status = cur.execute("SELECT * FROM welcome").fetchone()['profile_status']
@@ -74,11 +71,11 @@ async def profile(app: Client, msg: Message):
         if CMD.lower() == 'on':
             cur.execute("UPDATE welcome SET profile_status = 'on'")
             db.commit()
-            await msg.reply('حالت اصل خودکار فعال شد')
+            await msg.edit_text('حالت اصل خودکار فعال شد')
         elif CMD.lower() == 'off':
             cur.execute("UPDATE welcome SET profile_status = 'off'")
             db.commit()
-            await msg.reply('حالت اصل خودکار خاموش شد')
+            await msg.edit_text('حالت اصل خودکار خاموش شد')
         else:
             pass
     else:
@@ -87,8 +84,7 @@ async def profile(app: Client, msg: Message):
             "off": "خاموش"
         }
         await msg.reply(f'حالت اصل خودکار از قبل {Cmds[CMD]} بود')
-@app.on_message(filters.command(['setp','تنظیم اصل'],['','/','!','#']) & filters.reply & filters.group)
-@admin_only
+@app.on_message(filters.command(['setp','تنظیم اصل'],['','/','!','#']) & filters.reply & filters.group & filters.me)
 async def set_profile(app: Client, msg: Message):
     reply = msg.reply_to_message
     t = reply.from_user.is_bot
@@ -104,7 +100,7 @@ async def set_profile(app: Client, msg: Message):
                     elif user is not None:
                         cur.execute("UPDATE profile SET profile = '%s' WHERE id = '%s'" % (reply.text,str(reply.from_user.id)))
                         db.commit()
-                    await msg.reply("اصل کاربر ثبت شد")
+                    await msg.edit_text("اصل کاربر ثبت شد")
                     
                 
         
